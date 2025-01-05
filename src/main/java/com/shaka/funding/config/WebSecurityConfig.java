@@ -30,15 +30,14 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(
                         request -> request
-                                .requestMatchers("/api/user/create", "/api/user/login").permitAll()
-                                .requestMatchers("/admin/**").hasRole("ADMIN") // Protect admin endpoints
+                                .requestMatchers("/api/user/create", "/api/user/login").permitAll() // Allow user create and login
+//                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll() // Allow Swagger UI
+//                                .requestMatchers("/admin/**").hasRole("ADMIN") // Protect admin endpoints
                                 .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//                .addFilterBefore(jwtAuthenticationFilter,
-//        UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 

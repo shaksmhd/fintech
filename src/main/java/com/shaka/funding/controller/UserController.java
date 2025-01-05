@@ -1,8 +1,9 @@
 package com.shaka.funding.controller;
 
-
 import com.shaka.funding.dto.*;
 import com.shaka.funding.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @RestController
 @RequestMapping("/api/user")
 @Slf4j
+@Tag(name = "User Controller", description = "Endpoints for user operations")
 public class UserController {
 
     private final UserService userService;
@@ -19,6 +21,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
+    @Operation(summary = "Create a new user account", description = "Creates a new user account with the provided details")
     public BankResponse createAccount(@RequestBody UserRequest userRequest) {
         log.info("Received request to create account for email: {}", userRequest.getEmail());
         BankResponse response = userService.createAccount(userRequest);
@@ -27,6 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Login user", description = "Logs in a user with the provided credentials")
     public BankResponse login(@RequestBody LoginRequest userRequest) {
         log.info("Received request to login for email: {}", userRequest.getEmail());
         BankResponse response = userService.login(userRequest);
@@ -36,6 +40,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getAccountDetails")
+    @Operation(summary = "Get account details", description = "Retrieves account details for the provided account number")
     public BankResponse getAccountDetails(@RequestParam String accountNumber) {
         log.info("Received request to get account details for accountNumber: {}", accountNumber);
         BankResponse response = userService.getAccountDetails(accountNumber);
@@ -45,6 +50,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
+    @Operation(summary = "Update account details", description = "Updates account details with the provided information")
     public BankResponse updateAccount(@RequestBody UserRequest userRequest) {
         log.info("Received request to update account with accountNumber: {}", userRequest.getAccountNumber());
         BankResponse response = userService.updateAccount(userRequest);
@@ -54,6 +60,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
+    @Operation(summary = "Delete account", description = "Deletes the account with the provided account number")
     public void deleteAccount(@RequestParam String accountNumber) {
         log.info("Received request to delete account with accountNumber: {}", accountNumber);
         userService.deleteAccount(accountNumber);
@@ -62,6 +69,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/balanceEnquiry")
+    @Operation(summary = "Balance enquiry", description = "Checks the balance for the provided account number")
     public BankResponse balanceEnquiry(@RequestBody EnquiryRequest enquiryRequest) {
         log.info("Received request to check balance for accountNumber: {}", enquiryRequest.getAccountNumber());
         return userService.balanceEnquiry(enquiryRequest);
@@ -69,18 +77,21 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/nameEnquiry")
+    @Operation(summary = "Name enquiry", description = "Checks the name for the provided account number")
     public String nameEnquiry(@RequestBody EnquiryRequest enquiryRequest) {
         log.info("Received request to check name for accountNumber: {}", enquiryRequest.getAccountNumber());
         return userService.nameEnquiry(enquiryRequest);
     }
 
     @PostMapping("/credit")
+    @Operation(summary = "Credit account", description = "Credits the account with the provided amount")
     public BankResponse creditAccount(@RequestBody CreditDebitRequest request) {
         log.info("Received request to credit account with accountNumber: {}", request.getAccountNumber());
         return userService.creditAccount(request);
     }
 
     @PostMapping("/debit")
+    @Operation(summary = "Debit account", description = "Debits the account with the provided amount")
     public BankResponse debitAccount(@RequestBody CreditDebitRequest request) {
         log.info("Received request to debit account with accountNumber: {}", request.getAccountNumber());
         return userService.debitAccount(request);

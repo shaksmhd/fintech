@@ -4,6 +4,8 @@ import com.shaka.funding.dto.LoanRequest;
 import com.shaka.funding.dto.LoanResponse;
 import com.shaka.funding.entity.Loan;
 import com.shaka.funding.service.LoanService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/loans")
+@Tag(name = "Loan Controller", description = "Endpoints for loan operations")
 public class LoanController {
 
     private final LoanService loanService;
@@ -27,6 +30,7 @@ public class LoanController {
      * @return LoanResponse with loan details
      */
     @PostMapping("/apply")
+    @Operation(summary = "Apply for a loan", description = "Submits a loan application with the provided details")
     public ResponseEntity<LoanResponse> applyForLoan(@RequestBody LoanRequest loanRequest) {
         log.info("Received loan application request: {}", loanRequest);
         LoanResponse loanResponse = loanService.applyForLoan(loanRequest);
@@ -41,6 +45,7 @@ public class LoanController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/user/{userId}")
+    @Operation(summary = "Get loans by user ID", description = "Retrieves loans for the specified user ID")
     public ResponseEntity<List<LoanResponse>> getLoansByUserId(@PathVariable Long userId) {
         log.info("Fetching loans for user ID: {}", userId);
         List<Loan> loans = loanService.getLoansByUserId(userId);
@@ -59,6 +64,7 @@ public class LoanController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{loanId}/status")
+    @Operation(summary = "Update loan status", description = "Updates the status of the specified loan")
     public ResponseEntity<LoanResponse> updateLoanStatus(
             @PathVariable Long loanId,
             @RequestParam String status) {
